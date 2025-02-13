@@ -153,13 +153,13 @@ const startSock = async () => {
 	});
 
 	// merubah status member
-	Wilykun.ev.on('group-participants.update', update => {
+	Wilykun.ev.on('group-participants.update', async update => {
 		handleGroupParticipantsUpdate(store, update); // Gunakan fungsi handleGroupParticipantsUpdate
 		if (enableWelcomeMessage) {
-			handleWelcomeMessage(Wilykun, update); // Gunakan fungsi handleWelcomeMessage
+			await handleWelcomeMessage(Wilykun, update); // Gunakan fungsi handleWelcomeMessage
 		}
 		if (enableGoodbyeMessage) {
-			handleGoodbyeMessage(Wilykun, update); // Gunakan fungsi handleGoodbyeMessage
+			await handleGoodbyeMessage(Wilykun, update); // Gunakan fungsi handleGoodbyeMessage
 		}
 	});
 

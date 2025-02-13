@@ -18,14 +18,14 @@
   "license": "MIT",
   "dependencies": {
     "baileys": "latest",
-    "cfonts": "^3.3.0",
+    "cfonts": "latest",
     "chalk": "latest",
     "dotenv": "latest",
     "file-type": "latest",
     "fluent-ffmpeg": "latest",
     "node-fetch": "latest",
     "node-webpmux": "latest",
-    "os": "^0.1.2",
+    "os": "latest",
     "qrcode-terminal": "latest"
   }
 }
