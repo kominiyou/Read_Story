@@ -198,23 +198,23 @@ const startSock = async () => {
 		// write store
 		if (process.env.WRITE_STORE === 'true') store.writeToFile(`./${process.env.SESSION_NAME}/store.json`);
 
-		// untuk auto restart ketika RAM sisa 300MB
-		const memoryUsage = os.totalmem() - os.freemem();
-
-		if (memoryUsage > os.totalmem() - parseFileSize(process.env.AUTO_RESTART, false)) {
-			await Wilykun.sendMessage(
-				jidNormalizedUser(Wilykun.user.id),
-				{ text: `penggunaan RAM mencapai *${formatSize(memoryUsage)}* waktunya merestart...` },
-				{ ephemeralExpiration: 24 * 60 * 60 * 1000 }
-			);
-			exec('npm run restart:pm2', err => {
-				if (err) return process.send('reset');
-			});
-		}
+		 // Hapus bagian auto restart berdasarkan sisa RAM
 	}, 10 * 1000); // tiap 10 detik
 
-	process.on('uncaughtException', console.error);
-	process.on('unhandledRejection', console.error);
+	if (process.env.HANDLE_ERRORS === 'true') {
+		process.on('uncaughtException', function (err) {
+			let e = String(err);
+			if (e.includes("Socket connection timeout")) return;
+			if (e.includes("item-not-found")) return;
+			if (e.includes("rate-overlimit")) return;
+			if (e.includes("Connection Closed")) return;
+			if (e.includes("Timed Out")) return;
+			if (e.includes("Value not found")) return;
+			console.log('Caught exception: ', err);
+		});
+
+		process.on('unhandledRejection', console.error);
+	}
 };
 
 startSock();

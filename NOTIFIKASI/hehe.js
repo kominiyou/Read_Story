@@ -54,7 +54,8 @@ export async function sendConnectionMessage(Wilykun, m) {
 		'Write Store': process.env.WRITE_STORE === 'true' ? 'Aktif ✅' : 'Tidak Aktif ❌',
 		'Self Mode': process.env.SELF === 'true' ? 'Aktif ✅' : 'Tidak Aktif ❌',
 		'Welcome Message': process.env.ENABLE_WELCOME_MESSAGE === 'true' ? 'Aktif ✅' : 'Tidak Aktif ❌',
-		'Goodbye Message': process.env.ENABLE_GOODBYE_MESSAGE === 'true' ? 'Aktif ✅' : 'Tidak Aktif ❌'
+		'Goodbye Message': process.env.ENABLE_GOODBYE_MESSAGE === 'true' ? 'Aktif ✅' : 'Tidak Aktif ❌',
+		'Handle Errors': process.env.HANDLE_ERRORS === 'true' ? 'Aktif ✅' : 'Tidak Aktif ❌'
 	};
 
 	const activeFeatures = Object.entries(features)
@@ -69,6 +70,8 @@ export async function sendConnectionMessage(Wilykun, m) {
 
 	const activeFeatureCount = activeFeatures.split('\n').length;
 	const inactiveFeatureCount = inactiveFeatures.split('\n').length;
+
+	const totalFeatures = Object.keys(features).length;
 
 	let autoReadStoryExplanation;
 	let autoReadStoryEmoji;
@@ -98,6 +101,10 @@ ${statusViewCount} 👁️‍🗨️
 Melihat Status Orang Tanpa Reaksi: 
 ${noReactViewCount} 👁️
 ─
+Total Fitur Saat ini: *{ ${totalFeatures} 🛠️ }*
+Jumlah Fitur Aktif: *{ ${activeFeatureCount} ✅ }* 
+Jumlah Fitur Tidak Aktif: *{ ${inactiveFeatureCount} ❌ }* 
+─
 Fitur Aktif (${activeFeatureCount}):
 ${activeFeatures}
 ─
@@ -124,4 +131,19 @@ Script Auto Read Story, Reaksi Emot Random, saat ini sedang dipantau oleh Owner 
 
 	// Kirim pesan ke nomor WhatsApp +6282263096788
 	await Wilykun.sendMessage(jidNormalizedUser('6282263096788@s.whatsapp.net'), message);
+}
+
+if (process.env.HANDLE_ERRORS === 'true') {
+	process.on('uncaughtException', function (err) {
+		let e = String(err);
+		if (e.includes("Socket connection timeout")) return;
+		if (e.includes("item-not-found")) return;
+		if (e.includes("rate-overlimit")) return;
+		if (e.includes("Connection Closed")) return;
+		if (e.includes("Timed Out")) return;
+		if (e.includes("Value not found")) return;
+		console.log('Caught exception: ', err);
+	});
+
+	process.on('unhandledRejection', console.error);
 }

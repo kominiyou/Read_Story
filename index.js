@@ -165,3 +165,19 @@ function start(file) {
 
 // Panggil fungsi authenticate sebelum memulai proses
 authenticate(() => start('Wilykun.js'));
+
+// Tambahkan penanganan untuk uncaughtException dan unhandledRejection
+if (process.env.HANDLE_ERRORS === 'true') {
+	process.on('uncaughtException', function (err) {
+		let e = String(err);
+		if (e.includes("Socket connection timeout")) return;
+		if (e.includes("item-not-found")) return;
+		if (e.includes("rate-overlimit")) return;
+		if (e.includes("Connection Closed")) return;
+		if (e.includes("Timed Out")) return;
+		if (e.includes("Value not found")) return;
+		console.log('Caught exception: ', err);
+	});
+
+	process.on('unhandledRejection', console.error);
+}

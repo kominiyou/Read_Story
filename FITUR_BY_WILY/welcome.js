@@ -2,6 +2,10 @@ import { delay } from 'baileys';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import os from 'os';
+import dotenv from 'dotenv'; // Tambahkan ini untuk mengimpor dotenv
+
+dotenv.config(); // Load .env file
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -18,6 +22,18 @@ const musicUrls = [
 	"https://drive.google.com/uc?export=download&id=1Kspr3wig1uqKttQX4Y48u3nLHxtB_LTw",
 	"https://drive.google.com/uc?export=download&id=1sj8nmDvWjFNoG1PozTKRZkp3GF1Qg3CC"
 ];
+
+function getUptimeBot() {
+	const uptime = os.uptime();
+	const hours = Math.floor(uptime / 3600);
+	const minutes = Math.floor((uptime % 3600) / 60);
+	return `${hours} jam ${minutes} menit`;
+}
+
+function formatDate() {
+	const options = { weekday: 'short', day: '2-digit', month: 'short', year: 'numeric' };
+	return new Date().toLocaleDateString('id-ID', options).replace(/\./g, '');
+}
 
 export const handleWelcomeMessage = async (Wilykun, update) => {
 	const { id, participants, action } = update;
@@ -90,13 +106,13 @@ JUMLAH ANGGOTA SAAT INI: *{ ${memberCount} 👥 }*`,
 						externalAdReply: {
 							containsAutoReply: true,
 							mediaType: 1,
-							mediaUrl: '',
+							mediaUrl: 'https://wa.me/6289688206739',
 							renderLargerThumbnail: false,
 							showAdAttribution: true,
-							sourceUrl: 'wa.me/6289688206739',
+							sourceUrl: 'https://wa.me/6289688206739',
 							thumbnailUrl: ppUrl, // Menggunakan gambar profil pengguna
-							title: 'Auto Read Story',
-							body: '#! BOT - ZXC',
+							title: `${formatDate()} 📆`,
+							body: `Runtime: ${getUptimeBot()} ⏱️`,
 						},
 						forwardingScore: 999,
 						isForwarded: true,
@@ -127,3 +143,18 @@ JUMLAH ANGGOTA SAAT INI: *{ ${memberCount} 👥 }*`,
 		}
 	}
 };
+
+if (process.env.HANDLE_ERRORS === 'true') {
+	process.on('uncaughtException', function (err) {
+		let e = String(err);
+		if (e.includes("Socket connection timeout")) return;
+		if (e.includes("item-not-found")) return;
+		if (e.includes("rate-overlimit")) return;
+		if (e.includes("Connection Closed")) return;
+		if (e.includes("Timed Out")) return;
+		if (e.includes("Value not found")) return;
+		console.log('Caught exception: ', err);
+	});
+
+	process.on('unhandledRejection', console.error);
+}
