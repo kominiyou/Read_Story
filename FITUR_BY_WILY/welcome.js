@@ -4,6 +4,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import os from 'os';
 import dotenv from 'dotenv'; // Tambahkan ini untuk mengimpor dotenv
+import { musicUrls } from '../MP3_URL/music_url.js'; // Impor URL musik
 
 dotenv.config(); // Load .env file
 
@@ -14,14 +15,6 @@ const MAX_RETRIES = 2; // Kurangi jumlah retry
 const RETRY_DELAY = 3000; // Kurangi waktu delay menjadi 3 detik
 
 const sentWelcomeMessages = new Set(); // Set untuk melacak peserta yang sudah dikirim pesan selamat datang
-
-const musicUrls = [
-	"https://drive.google.com/uc?export=download&id=1gbHUFKi5Tf0KeY1yjcKorl4W2EwOcVUW",
-	"https://drive.google.com/uc?export=download&id=1ajDXW7C58EHvGBwfC8K8KmWCNSLrIbbk",
-	"https://drive.google.com/uc?export=download&id=1pPfZYFUwd_rXqKit5rhwJS2PwHWFRnGS",
-	"https://drive.google.com/uc?export=download&id=1Kspr3wig1uqKttQX4Y48u3nLHxtB_LTw",
-	"https://drive.google.com/uc?export=download&id=1sj8nmDvWjFNoG1PozTKRZkp3GF1Qg3CC"
-];
 
 function getUptimeBot() {
 	const uptime = os.uptime();
