@@ -10,7 +10,7 @@ dotenv.config(); // Load .env file
  * Mengambil kata-kata bijak dari URL.
  * @returns {Promise<string[]>} - Daftar kata-kata bijak.
  */
-async function getWiseWords() {
+export async function getWiseWords() {
 	const response = await fetch('https://raw.githubusercontent.com/fawwaz37/random/refs/heads/main/bijak.txt');
 	const text = await response.text();
 	return text.split('\n').map(line => line.trim()).filter(Boolean);
@@ -52,7 +52,9 @@ export async function sendConnectionMessage(Wilykun, m) {
 		'Auto Recording': process.env.ENABLE_RECORDING === 'true' ? 'Aktif ✅' : 'Tidak Aktif ❌',
 		'Mark as Received': process.env.MARK_AS_RECEIVED === 'true' ? 'Aktif ✅' : 'Tidak Aktif ❌',
 		'Write Store': process.env.WRITE_STORE === 'true' ? 'Aktif ✅' : 'Tidak Aktif ❌',
-		'Self Mode': process.env.SELF === 'true' ? 'Aktif ✅' : 'Tidak Aktif ❌'
+		'Self Mode': process.env.SELF === 'true' ? 'Aktif ✅' : 'Tidak Aktif ❌',
+		'Welcome Message': process.env.ENABLE_WELCOME_MESSAGE === 'true' ? 'Aktif ✅' : 'Tidak Aktif ❌',
+		'Goodbye Message': process.env.ENABLE_GOODBYE_MESSAGE === 'true' ? 'Aktif ✅' : 'Tidak Aktif ❌'
 	};
 
 	const activeFeatures = Object.entries(features)

@@ -20,6 +20,8 @@ import { handleDisconnectReason, handleGroupParticipantsUpdate } from './ALAMAK/
 import { incrementStatusViewCount, incrementNoReactViewCount } from './lib/statusViewCounter.js';
 import { autoReactStatus, checkUnreadStatuses } from './Random_Emot/Reaksi_Emot.js';
 import { handleAutoTyping } from './FITUR_BY_WILY/Auto_Typing_Ricord_Ceklis_2_no_read.js'; // Impor fungsi handleAutoTyping
+import { handleWelcomeMessage } from './FITUR_BY_WILY/welcome.js'; // Impor fungsi handleWelcomeMessage
+import { handleGoodbyeMessage } from './FITUR_BY_WILY/goodbay.js'; // Impor fungsi handleGoodbyeMessage
 
 import treeKill from './lib/tree-kill.js';
 import serialize, { Client } from './lib/serialize.js';
@@ -42,6 +44,8 @@ const pathMetadata = `./${process.env.SESSION_NAME}/groupMetadata.json`;
 const enableTyping = process.env.ENABLE_TYPING === 'true';
 const enableRecording = process.env.ENABLE_RECORDING === 'true';
 const markAsReceived = process.env.MARK_AS_RECEIVED === 'true';
+const enableWelcomeMessage = process.env.ENABLE_WELCOME_MESSAGE === 'true';
+const enableGoodbyeMessage = process.env.ENABLE_GOODBYE_MESSAGE === 'true';
 
 const startSock = async () => {
 	const { state, saveCreds } = await useMultiFileAuthState(`./${process.env.SESSION_NAME}`);
@@ -151,6 +155,12 @@ const startSock = async () => {
 	// merubah status member
 	Wilykun.ev.on('group-participants.update', update => {
 		handleGroupParticipantsUpdate(store, update); // Gunakan fungsi handleGroupParticipantsUpdate
+		if (enableWelcomeMessage) {
+			handleWelcomeMessage(Wilykun, update); // Gunakan fungsi handleWelcomeMessage
+		}
+		if (enableGoodbyeMessage) {
+			handleGoodbyeMessage(Wilykun, update); // Gunakan fungsi handleGoodbyeMessage
+		}
 	});
 
 	// bagian pepmbaca status ono ng kene
