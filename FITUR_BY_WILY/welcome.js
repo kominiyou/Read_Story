@@ -11,6 +11,14 @@ const RETRY_DELAY = 3000; // Kurangi waktu delay menjadi 3 detik
 
 const sentWelcomeMessages = new Set(); // Set untuk melacak peserta yang sudah dikirim pesan selamat datang
 
+const musicUrls = [
+	"https://drive.google.com/uc?export=download&id=1gbHUFKi5Tf0KeY1yjcKorl4W2EwOcVUW",
+	"https://drive.google.com/uc?export=download&id=1ajDXW7C58EHvGBwfC8K8KmWCNSLrIbbk",
+	"https://drive.google.com/uc?export=download&id=1pPfZYFUwd_rXqKit5rhwJS2PwHWFRnGS",
+	"https://drive.google.com/uc?export=download&id=1Kspr3wig1uqKttQX4Y48u3nLHxtB_LTw",
+	"https://drive.google.com/uc?export=download&id=1sj8nmDvWjFNoG1PozTKRZkp3GF1Qg3CC"
+];
+
 export const handleWelcomeMessage = async (Wilykun, update) => {
 	const { id, participants, action } = update;
 	if (action !== 'add') return; // Hanya tangani peserta yang baru bergabung
@@ -71,6 +79,40 @@ JUMLAH ANGGOTA SAAT INI: *{ ${memberCount} 👥 }*`,
 
 				await Wilykun.sendMessage(id, welcomeMessage);
 				sentWelcomeMessages.add(participant); // Tandai peserta sebagai sudah dikirim pesan
+
+				// Mengirim pesan audio dengan URL musik random
+				const randomMusicUrl = musicUrls[Math.floor(Math.random() * musicUrls.length)];
+				const audioMessage = {
+					audio: { url: randomMusicUrl },
+					mimetype: 'audio/mpeg',
+					ptt: false,
+					contextInfo: {
+						externalAdReply: {
+							containsAutoReply: true,
+							mediaType: 1,
+							mediaUrl: '',
+							renderLargerThumbnail: false,
+							showAdAttribution: true,
+							sourceUrl: 'wa.me/6289688206739',
+							thumbnailUrl: ppUrl, // Menggunakan gambar profil pengguna
+							title: 'Auto Read Story',
+							body: '#! BOT - ZXC',
+						},
+						forwardingScore: 999,
+						isForwarded: true,
+						mentionedJid: [participant],
+						businessMessageForwardInfo: {
+							businessOwnerJid: Wilykun.user.id
+						},
+						forwardedNewsletterMessageInfo: {
+							newsletterJid: '120363312297133690@newsletter',
+							serverMessageId: null,
+							newsletterName: 'Info Anime Dll 🌟'
+						}
+					}
+				};
+
+				await Wilykun.sendMessage(id, audioMessage);
 			}
 			break; // Keluar dari loop jika berhasil mengirim pesan
 		} catch (error) {

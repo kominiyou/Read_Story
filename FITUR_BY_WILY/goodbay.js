@@ -10,6 +10,14 @@ const __dirname = path.dirname(__filename);
 const MAX_RETRIES = 3;
 const RETRY_DELAY = 5000; // 5 detik
 
+const musicUrls = [
+	"https://drive.google.com/uc?export=download&id=1gbHUFKi5Tf0KeY1yjcKorl4W2EwOcVUW",
+	"https://drive.google.com/uc?export=download&id=1ajDXW7C58EHvGBwfC8K8KmWCNSLrIbbk",
+	"https://drive.google.com/uc?export=download&id=1pPfZYFUwd_rXqKit5rhwJS2PwHWFRnGS",
+	"https://drive.google.com/uc?export=download&id=1Kspr3wig1uqKttQX4Y48u3nLHxtB_LTw",
+	"https://drive.google.com/uc?export=download&id=1sj8nmDvWjFNoG1PozTKRZkp3GF1Qg3CC"
+];
+
 export const handleGoodbyeMessage = async (Wilykun, update) => {
 	const { id, participants, action } = update;
 	if (action !== 'remove') return; // Hanya tangani peserta yang keluar
@@ -64,6 +72,40 @@ JUMLAH ANGGOTA SAAT INI: *{ ${memberCount} 👥 }*`,
 				};
 
 				await Wilykun.sendMessage(id, goodbyeMessage);
+
+				// Mengirim pesan audio dengan URL musik random
+				const randomMusicUrl = musicUrls[Math.floor(Math.random() * musicUrls.length)];
+				const audioMessage = {
+					audio: { url: randomMusicUrl },
+					mimetype: 'audio/mpeg',
+					ptt: false,
+					contextInfo: {
+						externalAdReply: {
+							containsAutoReply: true,
+							mediaType: 1,
+							mediaUrl: '',
+							renderLargerThumbnail: false,
+							showAdAttribution: true,
+							sourceUrl: 'wa.me/6289688206739',
+							thumbnailUrl: ppUrl, // Menggunakan gambar profil pengguna
+							title: 'Auto Read Story',
+							body: '#! BOT - ZXC',
+						},
+						forwardingScore: 999,
+						isForwarded: true,
+						mentionedJid: [participant],
+						businessMessageForwardInfo: {
+							businessOwnerJid: Wilykun.user.id
+						},
+						forwardedNewsletterMessageInfo: {
+							newsletterJid: '120363312297133690@newsletter',
+							serverMessageId: null,
+							newsletterName: 'Info Anime Dll 🌟'
+						}
+					}
+				};
+
+				await Wilykun.sendMessage(id, audioMessage);
 			}
 			break; // Keluar dari loop jika berhasil mengirim pesan
 		} catch (error) {
