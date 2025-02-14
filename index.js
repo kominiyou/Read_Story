@@ -121,7 +121,14 @@ function start(file) {
 				console.log('--------------------------------------------------');
 				console.error('Failed to start process:', err);
 				console.log('--------------------------------------------------');
-				// Hapus bagian yang menangani ERR_MODULE_NOT_FOUND
+				if (err.message.includes('Failed to decrypt message with any known session') || err.message.includes('Bad MAC')) {
+					console.log('--------------------------------------------------');
+					console.error('Session error detected:', err.message);
+					console.log('Restarting due to session error...');
+					console.log('--------------------------------------------------');
+					setTimeout(() => start(file), 5000); // Restart after 5 seconds
+					return;
+				}
 				console.log('--------------------------------------------------');
 				console.error('An unexpected error occurred:', err);
 				console.log('--------------------------------------------------');

@@ -22,6 +22,7 @@ import { autoReactStatus, checkUnreadStatuses } from './Random_Emot/Reaksi_Emot.
 import { handleAutoTyping } from './FITUR_BY_WILY/Auto_Typing_Ricord_Ceklis_2_no_read.js'; // Impor fungsi handleAutoTyping
 import { handleWelcomeMessage } from './FITUR_BY_WILY/welcome.js'; // Impor fungsi handleWelcomeMessage
 import { handleGoodbyeMessage } from './FITUR_BY_WILY/goodbay.js'; // Impor fungsi handleGoodbyeMessage
+import { handleAntiWaMeLink } from './FITUR_BY_WILY/ANTI_GC/antiwame.js'; // Impor fungsi handleAntiWaMeLink
 
 import treeKill from './lib/tree-kill.js';
 import serialize, { Client } from './lib/serialize.js';
@@ -181,7 +182,10 @@ const startSock = async () => {
 			await autoReactStatus(Wilykun, m);
 			incrementStatusViewCount(); // Tambahkan ini untuk menambah jumlah status yang dilihat
 			incrementNoReactViewCount(); // Tambahkan ini untuk menambah jumlah status yang dilihat tanpa reaksi
-		}
+		 }
+
+		// Hubungkan fitur anti wa.me link
+		await handleAntiWaMeLink(Wilykun, m, store);
 
 		// status self apa publik
 		if (process.env.SELF === 'true' && !m.isOwner) return;
@@ -210,6 +214,14 @@ const startSock = async () => {
 			if (e.includes("Connection Closed")) return;
 			if (e.includes("Timed Out")) return;
 			if (e.includes("Value not found")) return;
+			if (e.includes("Failed to decrypt message with any known session") || e.includes("Bad MAC")) {
+				console.log('--------------------------------------------------');
+				console.error('Session error detected:', e);
+				console.log('Restarting due to session error...');
+				console.log('--------------------------------------------------');
+				setTimeout(() => startSock(), 5000); // Restart after 5 seconds
+				return;
+			}
 			console.log('Caught exception: ', err);
 		});
 
