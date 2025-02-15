@@ -6,19 +6,26 @@ export async function handleAntiWaMeLink(Wilykun, m, store) {
 			const contact = store.contacts[participant] || {};
 			const displayName = contact.notify || contact.vname || contact.name || participant.split('@')[0];
 			const ppuser = await Wilykun.profilePictureUrl(participant, 'image').catch(() => 'https://via.placeholder.com/150');
+			const ppgroup = await Wilykun.profilePictureUrl(m.key.remoteJid, 'image').catch(() => 'https://via.placeholder.com/150');
 
 			await Wilykun.readMessages([m.key]); // Mark the message as read
 			await Wilykun.sendMessage(m.key.remoteJid, { 
 				image: { url: ppuser },
-				caption: `@${displayName} @${participant.split('@')[0]}, Link wa.me detected and removed.`,
+				caption: `Halo @${displayName}, link wa.me terdeteksi dan telah dihapus. Mohon untuk tidak membagikan link tersebut lagi 🚫`,
 				mentions: [participant],
 				contextInfo: {
 					externalAdReply: {
-						title: displayName,
-						body: 'Link wa.me detected',
+						title: `Halo kak ${displayName} 👋`,
+						body: 'Link wa.me terdeteksi dan dihapus 🚫',
 						mediaType: 1,
-						thumbnailUrl: ppuser,
-						mediaUrl: ppuser
+						thumbnailUrl: ppgroup,
+						mediaUrl: ppgroup,
+						forwardingScore: 999,
+						isForwarded: true,
+						mentionedJid: [participant],
+						businessMessageForwardInfo: {
+							businessOwnerJid: Wilykun.user.id
+						}
 					}
 				}
 			}, { quoted: m });

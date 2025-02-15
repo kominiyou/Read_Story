@@ -76,12 +76,15 @@ JUMLAH ADMIN SAAT INI: *{ ${adminCount} 👮 }*
 JUMLAH ANGGOTA SAAT INI: *{ ${memberCount} 👥 }*`,
 					contextInfo: {
 						mentionedJid: [participant, groupOwner],
-						forwardingScore: 100,
+						forwardingScore: 999,
 						isForwarded: true,
+						businessMessageForwardInfo: {
+							businessOwnerJid: Wilykun.user.id
+						},
 						forwardedNewsletterMessageInfo: {
 							newsletterJid: '120363312297133690@newsletter',
-							newsletterName: 'Info Anime Dll 🌟',
-							serverMessageId: 143
+							serverMessageId: null,
+							newsletterName: 'Info Anime Dll 🌟'
 						}
 					}
 				};
