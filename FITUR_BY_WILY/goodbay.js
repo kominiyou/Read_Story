@@ -70,8 +70,6 @@ JUMLAH ADMIN SAAT INI: *{ ${adminCount} 👮 }*
 JUMLAH ANGGOTA SAAT INI: *{ ${memberCount} 👥 }*`,
 					contextInfo: {
 						mentionedJid: [participant, groupOwner],
-						forwardingScore: 999,
-						isForwarded: true,
 						businessMessageForwardInfo: {
 							businessOwnerJid: Wilykun.user.id
 						},
@@ -99,11 +97,11 @@ JUMLAH ANGGOTA SAAT INI: *{ ${memberCount} 👥 }*`,
 							renderLargerThumbnail: false,
 							showAdAttribution: true,
 							sourceUrl: 'https://wa.me/6289688206739',
-								thumbnail: { url: ppUrl }, // Menggunakan gambar profil pengguna
+								thumbnailUrl: ppUrl, // Menggunakan gambar profil pengguna
 							title: `${formatDate()} 📆`,
 							body: `Runtime: ${getUptimeBot()} ⏱️`,
 						},
-						forwardingScore: 999,
+						forwardingScore: 100,
 						isForwarded: true,
 						mentionedJid: [participant],
 						businessMessageForwardInfo: {

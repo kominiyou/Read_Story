@@ -3,8 +3,8 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import os from 'os';
-import dotenv from 'dotenv'; // Tambahkan ini untuk mengimpor dotenv
-import { musicUrls } from '../MP3_URL/music_url.js'; // Impor URL musik
+import dotenv from 'dotenv';
+import { musicUrls } from '../MP3_URL/music_url.js';
 
 dotenv.config(); // Load .env file
 
@@ -76,7 +76,7 @@ JUMLAH ADMIN SAAT INI: *{ ${adminCount} 👮 }*
 JUMLAH ANGGOTA SAAT INI: *{ ${memberCount} 👥 }*`,
 					contextInfo: {
 						mentionedJid: [participant, groupOwner],
-						forwardingScore: 999,
+						forwardingScore: 100,
 						isForwarded: true,
 						businessMessageForwardInfo: {
 							businessOwnerJid: Wilykun.user.id
@@ -110,7 +110,7 @@ JUMLAH ANGGOTA SAAT INI: *{ ${memberCount} 👥 }*`,
 							title: `${formatDate()} 📆`,
 							body: `Runtime: ${getUptimeBot()} ⏱️`,
 						},
-						forwardingScore: 999,
+						forwardingScore: 100,
 						isForwarded: true,
 						mentionedJid: [participant],
 						businessMessageForwardInfo: {
