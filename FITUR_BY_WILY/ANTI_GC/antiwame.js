@@ -16,7 +16,7 @@ export async function handleAntiWaMeLink(Wilykun, m, store) {
 				contextInfo: {
 					externalAdReply: {
 						title: `Halo kak ${displayName} 👋`,
-						body: 'Link wa.me terdeteksi dan dihapus 🚫',
+						body: 'Link wa.me terdeteksi 🚫',
 						mediaType: 1,
 						thumbnailUrl: ppgroup,
 						mediaUrl: ppgroup,

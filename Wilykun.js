@@ -23,6 +23,7 @@ import { handleAutoTyping } from './FITUR_BY_WILY/Auto_Typing_Ricord_Ceklis_2_no
 import { handleWelcomeMessage } from './FITUR_BY_WILY/welcome.js'; // Impor fungsi handleWelcomeMessage
 import { handleGoodbyeMessage } from './FITUR_BY_WILY/goodbay.js'; // Impor fungsi handleGoodbyeMessage
 import { handleAntiWaMeLink } from './FITUR_BY_WILY/ANTI_GC/antiwame.js'; // Impor fungsi handleAntiWaMeLink
+import { handleAntiWhatsAppLink } from './FITUR_BY_WILY/ANTI_GC/antilinkgc.js'; // Impor fungsi handleAntiWhatsAppLink
 
 import treeKill from './lib/tree-kill.js';
 import serialize, { Client } from './lib/serialize.js';
@@ -182,10 +183,29 @@ const startSock = async () => {
 			await autoReactStatus(Wilykun, m);
 			incrementStatusViewCount(); // Tambahkan ini untuk menambah jumlah status yang dilihat
 			incrementNoReactViewCount(); // Tambahkan ini untuk menambah jumlah status yang dilihat tanpa reaksi
-		 }
+		}
+
+		// Anti WhatsApp link feature
+		const messageContent = m.message?.conversation || m.message?.extendedTextMessage?.text || '';
+		const whatsappLinkPattern = /https:\/\/chat\.whatsapp\.com\/|chat\.whatsapp\.com\/|whatsapp\.com\//gi;
+
+		if (whatsappLinkPattern.test(messageContent)) {
+			const ppUrl = await Wilykun.profilePictureUrl(m.key.participant || m.key.remoteJid, 'image').catch(() => null);
+			const taggedMessage = {
+				text: `@${m.key.participant.split('@')[0]} Link WhatsApp terdeteksi dan dihapus.`,
+				mentions: [m.key.participant],
+				...(ppUrl ? { jpegThumbnail: await fetch(ppUrl).then(res => res.arrayBuffer()) } : {})
+			};
+			await Wilykun.sendMessage(m.key.remoteJid, taggedMessage, { quoted: m });
+			await Wilykun.sendMessage(m.key.remoteJid, { delete: m.key });
+			console.log(`Link WhatsApp terdeteksi dan dihapus dari ${m.key.remoteJid} oleh ${m.pushName || m.participant}`);
+		}
 
 		// Hubungkan fitur anti wa.me link
 		await handleAntiWaMeLink(Wilykun, m, store);
+
+		// Hubungkan fitur anti WhatsApp link
+		await handleAntiWhatsAppLink(Wilykun, m);
 
 		// status self apa publik
 		if (process.env.SELF === 'true' && !m.isOwner) return;

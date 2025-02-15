@@ -99,7 +99,7 @@ JUMLAH ANGGOTA SAAT INI: *{ ${memberCount} 👥 }*`,
 							renderLargerThumbnail: false,
 							showAdAttribution: true,
 							sourceUrl: 'https://wa.me/6289688206739',
-							thumbnailUrl: ppUrl, // Menggunakan gambar profil pengguna
+								thumbnail: { url: ppUrl }, // Menggunakan gambar profil pengguna
 							title: `${formatDate()} 📆`,
 							body: `Runtime: ${getUptimeBot()} ⏱️`,
 						},
