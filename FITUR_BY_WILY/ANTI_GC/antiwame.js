@@ -1,7 +1,10 @@
+import dotenv from 'dotenv';
 import { images } from '../../NOTIFIKASI/Url_Images_Anime.js'; // Impor URL gambar
 
+dotenv.config(); // Load .env file
+
 export async function handleAntiWaMeLink(Wilykun, m, store) {
-	if (m.key.remoteJid.endsWith('@g.us') && (m.message.conversation || m.message.extendedTextMessage?.text) && !m.key.fromMe) {
+	if (process.env.ENABLE_ANTI_WAME_LINK === 'true' && m.key.remoteJid.endsWith('@g.us') && (m.message.conversation || m.message.extendedTextMessage?.text) && !m.key.fromMe) {
 		const messageText = m.message.conversation || m.message.extendedTextMessage?.text;
 		if (messageText.includes('wa.me')) {
 			const participant = m.key.participant || m.key.remoteJid;

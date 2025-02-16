@@ -53,7 +53,7 @@ export const handleGoodbyeMessage = async (Wilykun, update) => {
 				try {
 					ppUrl = await Wilykun.profilePictureUrl(participant, 'image');
 				} catch {
-					ppUrl = 'https://example.com/default-profile-picture.jpg'; // Gambar default jika tidak ada gambar profil
+					ppUrl = images[Math.floor(Math.random() * images.length)]; // Gambar default dari URL_Images_Anime.js
 				}
 
 				// Mengirim pesan selamat tinggal dengan gambar

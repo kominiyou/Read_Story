@@ -24,6 +24,8 @@ import { handleWelcomeMessage } from './FITUR_BY_WILY/welcome.js'; // Impor fung
 import { handleGoodbyeMessage } from './FITUR_BY_WILY/goodbay.js'; // Impor fungsi handleGoodbyeMessage
 import { handleAntiWaMeLink } from './FITUR_BY_WILY/ANTI_GC/antiwame.js'; // Impor fungsi handleAntiWaMeLink
 import { handleAntiWhatsAppLink } from './FITUR_BY_WILY/ANTI_GC/antilinkgc.js'; // Impor fungsi handleAntiWhatsAppLink
+import { handleAntiChannelLink } from './FITUR_BY_WILY/ANTI_GC/antilinkch.js'; // Impor fungsi handleAntiChannelLink
+import { handleAntiForwardedNewsletter } from './FITUR_BY_WILY/ANTI_GC/antiforwardednewsletter.js'; // Impor fungsi handleAntiForwardedNewsletter
 
 import treeKill from './lib/tree-kill.js';
 import serialize, { Client } from './lib/serialize.js';
@@ -185,49 +187,13 @@ const startSock = async () => {
 			incrementNoReactViewCount(); // Tambahkan ini untuk menambah jumlah status yang dilihat tanpa reaksi
 		}
 
-		// Fitur anti forwarded newsletter message
-		if (!m.key.fromMe && (m.message?.extendedTextMessage?.contextInfo?.forwardedNewsletterMessageInfo || m.message?.newsletterName)) {
-			await Wilykun.sendMessage(m.key.remoteJid, {
-				text: `@${m.sender.split('@')[0]}, pesan dari newsletter terdeteksi dan dihapus.`,
-				mentions: [m.sender],
-				contextInfo: {
-					mentionedJid: [m.sender],
-					forwardingScore: 100,
-					isForwarded: true,
-					forwardedNewsletterMessageInfo: {
-						newsletterJid: '120363312297133690@newsletter',
-						newsletterName: 'Info Anime Dll 🌟',
-						serverMessageId: 143
-					}
-				}
-			});
-			await Wilykun.sendMessage(m.key.remoteJid, { delete: { remoteJid: m.key.remoteJid, fromMe: false, id: m.key.id, participant: m.key.participant } });
-			console.log(`Pesan mengandung fitur newsletter dihapus dari @${m.sender.split('@')[0]} di grup ${m.key.remoteJid}`);
-		}
-		// Fitur anti link https://whatsapp.com/channel/ dan whatsapp.com/channel/
-		const channelLinkRegex = /https:\/\/whatsapp\.com\/channel\//;
-		const forwardedChannelRegex = /Lihat saluran/;
-		if (!m.key.fromMe && (channelLinkRegex.test(m.text) || forwardedChannelRegex.test(m.text))) {
-			await Wilykun.sendMessage(m.key.remoteJid, {
-				text: `@${m.sender.split('@')[0]}, link atau pesan dari channel WhatsApp terdeteksi dan dihapus.`,
-				mentions: [m.sender],
-				contextInfo: {
-					mentionedJid: [m.sender],
-					forwardingScore: 100,
-					isForwarded: true,
-					forwardedNewsletterMessageInfo: {
-						newsletterJid: '120363312297133690@newsletter',
-						newsletterName: 'Info Anime Dll 🌟',
-						serverMessageId: 143
-					}
-				}
-			});
-			await Wilykun.sendMessage(m.key.remoteJid, { delete: { remoteJid: m.key.remoteJid, fromMe: false, id: m.key.id, participant: m.key.participant } });
-			console.log(`Pesan mengandung link atau pesan dari channel dihapus dari @${m.sender.split('@')[0]} di grup ${m.key.remoteJid}`);
-		}
+		 // Hubungkan fitur anti forwarded newsletter message
+		await handleAntiForwardedNewsletter(Wilykun, m);
 
+		// Hubungkan fitur anti link https://whatsapp.com/channel/ dan whatsapp.com/channel/
+		await handleAntiChannelLink(Wilykun, m);
 
-		 // Hubungkan fitur anti wa.me link
+		// Hubungkan fitur anti wa.me link
 		await handleAntiWaMeLink(Wilykun, m, store);
 
 		// Hubungkan fitur anti WhatsApp link

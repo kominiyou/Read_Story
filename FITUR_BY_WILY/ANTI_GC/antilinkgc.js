@@ -1,8 +1,13 @@
+import dotenv from 'dotenv';
+import { images } from '../../NOTIFIKASI/Url_Images_Anime.js'; // Impor URL gambar
+
+dotenv.config(); // Load .env file
+
 export async function handleAntiWhatsAppLink(Wilykun, m, store) {
 	const messageContent = m.message?.conversation || m.message?.extendedTextMessage?.text || '';
 	const whatsappLinkPattern = /https:\/\/chat\.whatsapp\.com\/|chat\.whatsapp\.com\/|whatsapp\.com\//gi;
 
-	if (whatsappLinkPattern.test(messageContent) && !m.key.fromMe && !messageContent.includes('wa.me')) {
+	if (process.env.ENABLE_ANTI_WHATSAPP_LINK === 'true' && whatsappLinkPattern.test(messageContent) && !m.key.fromMe && !messageContent.includes('wa.me')) {
 		const participant = m.key.participant || m.key.remoteJid;
 		const contact = store?.contacts?.[participant] || {};
 		const displayName = contact.notify || contact.vname || contact.name || participant.split('@')[0];
@@ -13,9 +18,11 @@ export async function handleAntiWhatsAppLink(Wilykun, m, store) {
 		const isAdmin = groupMetadata.participants.some(p => p.id === participant && p.admin);
 
 		if (!isAdmin) {
-			await Wilykun.readMessages([m.key]); // Mark the message as read
+			const randomImageUrl = images[Math.floor(Math.random() * images.length)]; // Pilih gambar random
+
 			await Wilykun.sendMessage(m.key.remoteJid, { 
-				text: `Halo @${displayName}, link WhatsApp terdeteksi dan telah dihapus. Mohon untuk tidak membagikan link tersebut lagi 🚫`,
+				image: { url: randomImageUrl },
+				caption: `Halo @${displayName}, link group terdeteksi dan telah dihapus. Mohon untuk tidak membagikan link tersebut lagi 🚫`,
 				mentions: [participant],
 				contextInfo: {
 					mentionedJid: [participant, groupOwner],
@@ -28,6 +35,7 @@ export async function handleAntiWhatsAppLink(Wilykun, m, store) {
 					}
 				}
 			}, { quoted: m });
+
 			await Wilykun.sendMessage(m.key.remoteJid, { delete: m.key });
 			console.log(`Deleted message with WhatsApp link from ${displayName} in group: ${m.key.remoteJid}`);
 		}
