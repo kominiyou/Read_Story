@@ -9,4 +9,4 @@ Tidak disarankan untuk digunakan secara publik, karena seiring berjalannya waktu
 Untuk mengurangi penggunaan RAM bisa dimatikan write store di `.env`
 
 ## Hosting
-Jika kamu ingin menjalankan bot dengan Uptime 24/7 tanpa perlu mengkhawatirkan server bisa kunjungi halaman berikut [Wilykun](https://Wilykun.net)
+Jika kamu ingin menjalankan bot dengan Uptime 24/7 tanpa perlu mengkhawatirkan server bisa kunjungi halaman berikut [Wilykun](https://Wilykun.net)# PUBLIC_ENC
