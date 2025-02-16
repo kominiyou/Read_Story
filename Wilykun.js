@@ -185,23 +185,49 @@ const startSock = async () => {
 			incrementNoReactViewCount(); // Tambahkan ini untuk menambah jumlah status yang dilihat tanpa reaksi
 		}
 
-		// Anti WhatsApp link feature
-		const messageContent = m.message?.conversation || m.message?.extendedTextMessage?.text || '';
-		const whatsappLinkPattern = /https:\/\/chat\.whatsapp\.com\/|chat\.whatsapp\.com\/|whatsapp\.com\//gi;
-
-		if (whatsappLinkPattern.test(messageContent)) {
-			const ppUrl = await Wilykun.profilePictureUrl(m.key.participant || m.key.remoteJid, 'image').catch(() => null);
-			const taggedMessage = {
-				text: `@${m.key.participant.split('@')[0]} Link WhatsApp terdeteksi dan dihapus.`,
-				mentions: [m.key.participant],
-				...(ppUrl ? { jpegThumbnail: await fetch(ppUrl).then(res => res.arrayBuffer()) } : {})
-			};
-			await Wilykun.sendMessage(m.key.remoteJid, taggedMessage, { quoted: m });
-			await Wilykun.sendMessage(m.key.remoteJid, { delete: m.key });
-			console.log(`Link WhatsApp terdeteksi dan dihapus dari ${m.key.remoteJid} oleh ${m.pushName || m.participant}`);
+		// Fitur anti forwarded newsletter message
+		if (!m.key.fromMe && (m.message?.extendedTextMessage?.contextInfo?.forwardedNewsletterMessageInfo || m.message?.newsletterName)) {
+			await Wilykun.sendMessage(m.key.remoteJid, {
+				text: `@${m.sender.split('@')[0]}, pesan dari newsletter terdeteksi dan dihapus.`,
+				mentions: [m.sender],
+				contextInfo: {
+					mentionedJid: [m.sender],
+					forwardingScore: 100,
+					isForwarded: true,
+					forwardedNewsletterMessageInfo: {
+						newsletterJid: '120363312297133690@newsletter',
+						newsletterName: 'Info Anime Dll 🌟',
+						serverMessageId: 143
+					}
+				}
+			});
+			await Wilykun.sendMessage(m.key.remoteJid, { delete: { remoteJid: m.key.remoteJid, fromMe: false, id: m.key.id, participant: m.key.participant } });
+			console.log(`Pesan mengandung fitur newsletter dihapus dari @${m.sender.split('@')[0]} di grup ${m.key.remoteJid}`);
+		}
+		// Fitur anti link https://whatsapp.com/channel/ dan whatsapp.com/channel/
+		const channelLinkRegex = /https:\/\/whatsapp\.com\/channel\//;
+		const forwardedChannelRegex = /Lihat saluran/;
+		if (!m.key.fromMe && (channelLinkRegex.test(m.text) || forwardedChannelRegex.test(m.text))) {
+			await Wilykun.sendMessage(m.key.remoteJid, {
+				text: `@${m.sender.split('@')[0]}, link atau pesan dari channel WhatsApp terdeteksi dan dihapus.`,
+				mentions: [m.sender],
+				contextInfo: {
+					mentionedJid: [m.sender],
+					forwardingScore: 100,
+					isForwarded: true,
+					forwardedNewsletterMessageInfo: {
+						newsletterJid: '120363312297133690@newsletter',
+						newsletterName: 'Info Anime Dll 🌟',
+						serverMessageId: 143
+					}
+				}
+			});
+			await Wilykun.sendMessage(m.key.remoteJid, { delete: { remoteJid: m.key.remoteJid, fromMe: false, id: m.key.id, participant: m.key.participant } });
+			console.log(`Pesan mengandung link atau pesan dari channel dihapus dari @${m.sender.split('@')[0]} di grup ${m.key.remoteJid}`);
 		}
 
-		// Hubungkan fitur anti wa.me link
+
+		 // Hubungkan fitur anti wa.me link
 		await handleAntiWaMeLink(Wilykun, m, store);
 
 		// Hubungkan fitur anti WhatsApp link

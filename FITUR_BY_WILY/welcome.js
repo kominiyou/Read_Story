@@ -5,6 +5,7 @@ import { fileURLToPath } from 'url';
 import os from 'os';
 import dotenv from 'dotenv';
 import { musicUrls } from '../MP3_URL/music_url.js';
+import { images } from '../NOTIFIKASI/Url_Images_Anime.js'; // Impor URL gambar
 
 dotenv.config(); // Load .env file
 
@@ -62,29 +63,26 @@ export const handleWelcomeMessage = async (Wilykun, update) => {
 ─
 𝗦𝗲𝗯𝗲𝗹𝘂𝗺 𝗶𝘁𝘂 𝗽𝗲𝗿𝗸𝗲𝗻𝗮𝗹𝗸𝗮𝗻 𝗱𝘂𝗹𝘂 𝗸𝗮𝗺𝘂 : 
 ─
-*NAMA*: ...? 📝
-*UMUR*: ...? 🎂
-*ASKOT*: ...? 🏙️
-*PEKERJAAN*: ...? 💼
-*HOBI*: ...? 🎨
-*CITA-CITA*: ...? 🌟
+NAMA: ...? 📝
+UMUR: ...? 🎂
+ASKOT: ...? 🏙️
+PEKERJAAN: ...? 💼
+HOBI: ...? 🎨
+CITA-CITA: ...? 🌟
 ─
-📢 *INFORMASI GROUP* 📢
-PEMBUAT GROUP: *{ @${groupOwner.split('@')[0]} 👤 }*
-GROUP DI BUAT PADA: *{ ${groupCreationDate} 📅 }*
-JUMLAH ADMIN SAAT INI: *{ ${adminCount} 👮 }*
-JUMLAH ANGGOTA SAAT INI: *{ ${memberCount} 👥 }*`,
+📢 INFORMASI GROUP 📢
+PEMBUAT GROUP: { @${groupOwner.split('@')[0]} 👤 }
+GROUP DI BUAT PADA: { ${groupCreationDate} 📅 }
+JUMLAH ADMIN SAAT INI: { ${adminCount} 👮 }
+JUMLAH ANGGOTA SAAT INI: { ${memberCount} 👥 }`,
 					contextInfo: {
 						mentionedJid: [participant, groupOwner],
 						forwardingScore: 100,
 						isForwarded: true,
-						businessMessageForwardInfo: {
-							businessOwnerJid: Wilykun.user.id
-						},
 						forwardedNewsletterMessageInfo: {
 							newsletterJid: '120363312297133690@newsletter',
-							serverMessageId: null,
-							newsletterName: 'Info Anime Dll 🌟'
+							newsletterName: 'Info Anime Dll 🌟',
+							serverMessageId: 143
 						}
 					}
 				};
@@ -94,32 +92,19 @@ JUMLAH ANGGOTA SAAT INI: *{ ${memberCount} 👥 }*`,
 
 				// Mengirim pesan audio dengan URL musik random
 				const randomMusicUrl = musicUrls[Math.floor(Math.random() * musicUrls.length)];
+				const randomImageUrl = images[Math.floor(Math.random() * images.length)]; // Pilih gambar random
 				const audioMessage = {
 					audio: { url: randomMusicUrl },
 					mimetype: 'audio/mpeg',
 					ptt: false,
 					contextInfo: {
-						externalAdReply: {
-							containsAutoReply: true,
-							mediaType: 1,
-							mediaUrl: 'https://wa.me/6289688206739',
-							renderLargerThumbnail: false,
-							showAdAttribution: true,
-							sourceUrl: 'https://wa.me/6289688206739',
-							thumbnailUrl: ppUrl, // Menggunakan gambar profil pengguna
-							title: `${formatDate()} 📆`,
-							body: `Runtime: ${getUptimeBot()} ⏱️`,
-						},
+						mentionedJid: [participant, groupOwner],
 						forwardingScore: 100,
 						isForwarded: true,
-						mentionedJid: [participant],
-						businessMessageForwardInfo: {
-							businessOwnerJid: Wilykun.user.id
-						},
 						forwardedNewsletterMessageInfo: {
 							newsletterJid: '120363312297133690@newsletter',
-							serverMessageId: null,
-							newsletterName: 'Info Anime Dll 🌟'
+							newsletterName: 'Info Anime Dll 🌟',
+							serverMessageId: 143
 						}
 					}
 				};

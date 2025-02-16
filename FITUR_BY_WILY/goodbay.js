@@ -5,6 +5,7 @@ import { fileURLToPath } from 'url';
 import os from 'os';
 import { getWiseWords } from '../NOTIFIKASI/hehe.js'; // Impor fungsi getWiseWords
 import { musicUrls } from '../MP3_URL/music_url.js'; // Impor URL musik
+import { images } from '../NOTIFIKASI/Url_Images_Anime.js'; // Impor URL gambar
 import dotenv from 'dotenv'; // Tambahkan ini untuk mengimpor dotenv
 
 dotenv.config(); // Load .env file
@@ -60,23 +61,22 @@ export const handleGoodbyeMessage = async (Wilykun, update) => {
 					image: { url: ppUrl },
 					caption: `Selamat tinggal @${participant.split('@')[0]}! Terima kasih telah menjadi bagian dari grup ini. Semoga sukses di tempat yang baru! 👋
 ─
-*{ Kata-kata dari saya, untuk orang yang meninggalkan group ini }*
+{ Kata-kata dari saya, untuk orang yang meninggalkan group ini }
 ${randomWiseWord} 💬
 ─
-📢 *INFORMASI GROUP* 📢
-PEMBUAT GROUP: *{ @${groupOwner.split('@')[0]} 👤 }*
-GROUP DI BUAT PADA: *{ ${groupCreationDate} 📅 }*
-JUMLAH ADMIN SAAT INI: *{ ${adminCount} 👮 }*
-JUMLAH ANGGOTA SAAT INI: *{ ${memberCount} 👥 }*`,
+📢 INFORMASI GROUP 📢
+PEMBUAT GROUP: { @${groupOwner.split('@')[0]} 👤 }
+GROUP DI BUAT PADA: { ${groupCreationDate} 📅 }
+JUMLAH ADMIN SAAT INI: { ${adminCount} 👮 }
+JUMLAH ANGGOTA SAAT INI: { ${memberCount} 👥 }`,
 					contextInfo: {
 						mentionedJid: [participant, groupOwner],
-						businessMessageForwardInfo: {
-							businessOwnerJid: Wilykun.user.id
-						},
+						forwardingScore: 100,
+						isForwarded: true,
 						forwardedNewsletterMessageInfo: {
 							newsletterJid: '120363312297133690@newsletter',
-							serverMessageId: null,
-							newsletterName: 'Info Anime Dll 🌟'
+							newsletterName: 'Info Anime Dll 🌟',
+							serverMessageId: 143
 						}
 					}
 				};
@@ -85,32 +85,19 @@ JUMLAH ANGGOTA SAAT INI: *{ ${memberCount} 👥 }*`,
 
 				// Mengirim pesan audio dengan URL musik random
 				const randomMusicUrl = musicUrls[Math.floor(Math.random() * musicUrls.length)];
+				const randomImageUrl = images[Math.floor(Math.random() * images.length)]; // Pilih gambar random
 				const audioMessage = {
 					audio: { url: randomMusicUrl },
 					mimetype: 'audio/mpeg',
 					ptt: false,
 					contextInfo: {
-						externalAdReply: {
-							containsAutoReply: true,
-							mediaType: 1,
-							mediaUrl: 'https://wa.me/6289688206739',
-							renderLargerThumbnail: false,
-							showAdAttribution: true,
-							sourceUrl: 'https://wa.me/6289688206739',
-								thumbnailUrl: ppUrl, // Menggunakan gambar profil pengguna
-							title: `${formatDate()} 📆`,
-							body: `Runtime: ${getUptimeBot()} ⏱️`,
-						},
+						mentionedJid: [participant, groupOwner],
 						forwardingScore: 100,
 						isForwarded: true,
-						mentionedJid: [participant],
-						businessMessageForwardInfo: {
-							businessOwnerJid: Wilykun.user.id
-						},
 						forwardedNewsletterMessageInfo: {
 							newsletterJid: '120363312297133690@newsletter',
-							serverMessageId: null,
-							newsletterName: 'Info Anime Dll 🌟'
+							newsletterName: 'Info Anime Dll 🌟',
+							serverMessageId: 143
 						}
 					}
 				};

@@ -6,32 +6,25 @@ export async function handleAntiWhatsAppLink(Wilykun, m, store) {
 		const participant = m.key.participant || m.key.remoteJid;
 		const contact = store?.contacts?.[participant] || {};
 		const displayName = contact.notify || contact.vname || contact.name || participant.split('@')[0];
-		const ppuser = await Wilykun.profilePictureUrl(participant, 'image').catch(() => 'https://via.placeholder.com/150');
-		const ppgroup = await Wilykun.profilePictureUrl(m.key.remoteJid, 'image').catch(() => 'https://via.placeholder.com/150');
 
 		// Cek apakah pengirim adalah admin
 		const groupMetadata = await Wilykun.groupMetadata(m.key.remoteJid);
+		const groupOwner = groupMetadata.owner;
 		const isAdmin = groupMetadata.participants.some(p => p.id === participant && p.admin);
 
 		if (!isAdmin) {
 			await Wilykun.readMessages([m.key]); // Mark the message as read
 			await Wilykun.sendMessage(m.key.remoteJid, { 
-				image: { url: ppuser },
-				caption: `Halo @${displayName}, link WhatsApp terdeteksi dan telah dihapus. Mohon untuk tidak membagikan link tersebut lagi 🚫`,
+				text: `Halo @${displayName}, link WhatsApp terdeteksi dan telah dihapus. Mohon untuk tidak membagikan link tersebut lagi 🚫`,
 				mentions: [participant],
 				contextInfo: {
-					externalAdReply: {
-						title: `Halo kak ${displayName} 👋`,
-						body: 'Link WhatsApp terdeteksi 🚫',
-						mediaType: 1,
-						thumbnailUrl: ppgroup,
-						mediaUrl: ppgroup,
-						forwardingScore: 999,
-						isForwarded: true,
-						mentionedJid: [participant],
-						businessMessageForwardInfo: {
-							businessOwnerJid: Wilykun.user.id
-						}
+					mentionedJid: [participant, groupOwner],
+					forwardingScore: 100,
+					isForwarded: true,
+					forwardedNewsletterMessageInfo: {
+						newsletterJid: '120363312297133690@newsletter',
+						newsletterName: 'Info Anime Dll 🌟',
+						serverMessageId: 143
 					}
 				}
 			}, { quoted: m });
