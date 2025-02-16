@@ -3,11 +3,30 @@ import { images } from '../../NOTIFIKASI/Url_Images_Anime.js'; // Impor URL gamb
 
 dotenv.config(); // Load .env file
 
+const processedMessages = new Set();
+
 export async function handleAntiWhatsAppLink(Wilykun, m, store) {
 	const messageContent = m.message?.conversation || m.message?.extendedTextMessage?.text || '';
 	const whatsappLinkPattern = /https:\/\/chat\.whatsapp\.com\/|chat\.whatsapp\.com\/|whatsapp\.com\//gi;
 
-	if (process.env.ENABLE_ANTI_WHATSAPP_LINK === 'true' && whatsappLinkPattern.test(messageContent) && !m.key.fromMe && !messageContent.includes('wa.me')) {
+	// Function to recursively check message content for links
+	const checkMessageContent = (content) => {
+		if (whatsappLinkPattern.test(content)) {
+			return true;
+		}
+		if (m.message?.extendedTextMessage?.contextInfo?.quotedMessage) {
+			const quotedMessageContent = m.message.extendedTextMessage.contextInfo.quotedMessage.conversation || m.message.extendedTextMessage.contextInfo.quotedMessage.extendedTextMessage?.text || '';
+			return checkMessageContent(quotedMessageContent);
+		}
+		return false;
+	};
+
+	if (process.env.ENABLE_ANTI_WHATSAPP_LINK === 'true' && checkMessageContent(messageContent) && !m.key.fromMe && !messageContent.includes('wa.me')) {
+		if (processedMessages.has(m.key.id)) {
+			return; // Skip if the message has already been processed
+		}
+		processedMessages.add(m.key.id);
+
 		const participant = m.key.participant || m.key.remoteJid;
 		const contact = store?.contacts?.[participant] || {};
 		const displayName = contact.notify || contact.vname || contact.name || participant.split('@')[0];
